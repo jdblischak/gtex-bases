@@ -48,11 +48,12 @@ str(saf_gene)
 saf_sub <- saf_gene["ENSG00000223745"]
 
 # Expand to one entry per base pair
-saf_base <- saf_sub[, list(Start = seq(Start, End), End = seq(Start, End) + 1),
+saf_base <- saf_sub[, list(Start = seq(Start, End)),
                      by = list(GeneID, Chr, Strand, Name)]
+saf_base[, End := Start]
 
 str(saf_base)
-stopifnot(saf_base$End - saf_base$Start == 1)
+stopifnot(saf_base$End == saf_base$Start)
 
 saf_base <- saf_base[, list(GeneID, Chr, Start, End, Strand, Name)]
 write.table(saf_base, file = "data/ENSG00000223745.saf",
