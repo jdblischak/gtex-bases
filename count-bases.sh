@@ -2,7 +2,7 @@
 
 featureCounts \
   -a data/ENSG00000223745.saf \
-  -o data/ENSG00000223745-chr1-93262186-93345888.txt \
+  -o data/ENSG00000223745-CCDC18-AS1-chr1-93262186-93345888.txt \
   -F SAF \
   -f \
   --read2pos 5 \

@@ -11,7 +11,7 @@ gtf <- "data/gencode.v26.GRCh38.genes.gtf"
 gr <- import(gtf, format = "gtf")
 
 # SAF columns:
-# GeneID  Chr     Start   End     Strand  Name
+# GeneID Chr Start End Strand Name
 
 saf <- data.table(
   GeneID = mcols(gr)[, "gene_id"],
@@ -32,8 +32,6 @@ saf <- saf[Chr != "Y", ]
 stopifnot(saf$Start <= saf$End)
 
 str(saf)
-
-
 
 # Reduce to one entry per gene
 setkey(saf, GeneID)
