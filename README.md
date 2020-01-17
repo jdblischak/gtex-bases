@@ -46,7 +46,15 @@ conda activate gtex-bases
 
 1. Count the number of reads per base with featureCounts
     ```
-    bash count-bases.sh
+    Rscript count-bases.R
+    ```
+    Alternatively submit to the cluster, passing the optional argument for the
+    number of threads to use for featureCounts:
+    ```
+    sbatch --partition=broadwl -J count-bases \
+      -o count-bases-stdout.txt -e count-bases-stderr.txt \
+      --mem=32G --nodes=1 --tasks-per-node=8 \
+      count-bases.R 8
     ```
 
 ## Miscellaneous
