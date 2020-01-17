@@ -36,11 +36,13 @@ conda activate gtex-bases
     ```
     Rscript setup.R
     ```
+    This creates the file `data/gencode.v26.GRCh38.genes.gtf`
 
 1. Convert the GTF file to per-gene SAF files with one entry per base pair
     ```
     Rscript gtf2saf.R
     ```
+    For each target gene, this creates a file `data/saf/<ensembl-gene-id>.saf`
 
 1. Count the number of reads per base with featureCounts
     ```
