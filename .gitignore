@@ -1,1 +1,4 @@
 data/
+.R*
+*stdout.txt
+*stderr.txt

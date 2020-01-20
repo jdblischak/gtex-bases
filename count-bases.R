@@ -18,7 +18,7 @@ suppressPackageStartupMessages({
 library(Rsubread)
 })
 
-ntreads <- 1
+nthreads <- 1
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 1) {
   nthreads <- as.integer(args)
