@@ -63,3 +63,8 @@ conda activate gtex-bases
     ```
     bash count-paired-end-reads.sh /project2/mstephens/dongyue/gtex/*.bam
     ```
+
+* Run a standard gene-level featureCounts run
+    ```
+    bash run-standard-featurecounts.sh /project2/mstephens/dongyue/gtex/*.bam
+    ```
