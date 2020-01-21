@@ -15,7 +15,8 @@
 # Setup ------------------------------------------------------------------------
 
 suppressPackageStartupMessages({
-library(Rsubread)
+  library(Rsubread)
+  library(stringr)
 })
 
 nthreads <- 1
@@ -51,7 +52,7 @@ dir.create(outdir, showWarnings = FALSE)
 # Count and export results -----------------------------------------------------
 
 for (i in seq_along(saf_files)) {
-  metadata <- read.table(saf_files[i], header = TRUE, nrow = 1)
+  saf <- read.table(saf_files[i], header = TRUE, stringsAsFactors = FALSE)
   counts <- featureCounts(
     files = bam_files,
     annot.ext = saf_files[i],
@@ -63,11 +64,15 @@ for (i in seq_along(saf_files)) {
     nthreads = nthreads,
     tmpDir = tempdir()
   )
+  colnames(counts$counts) <- stringr::str_extract(colnames(counts$counts),
+                                                  "SRR\\d+\\.bam")
+  # Avoid duplicate rowname warning:
+  rownames(counts$counts) <- seq_len(nrow(counts$counts))
   outdata <- cbind(counts$annotation, counts$counts)
   outdata[["Length"]] <- NULL
 
-  outfile <- sprintf("%s-%s-chr%d-%d-%d.txt", metadata$GeneID, metadata$Name,
-                     metadata$Chr, metadata$Start, metadata$End)
+  outfile <- sprintf("%s-%s-chr%d-%d-%d.txt", saf$GeneID[1], saf$Name[1],
+                     saf$Chr[1], min(saf$Start), max(saf$End))
   outfile <- file.path(outdir, outfile)
   write.table(outdata, file = outfile,
               sep = "\t", quote = FALSE, row.names = FALSE)

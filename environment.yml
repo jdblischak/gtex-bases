@@ -11,5 +11,6 @@ dependencies:
   - bioconductor-rtracklayer
   - r-data.table
   - r-base=3.6
+  - r-stringr
   - samtools
   - subread

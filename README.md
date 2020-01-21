@@ -8,8 +8,8 @@ samples based on topic modelling of the splicing patterns.
 * The reads are paired-end
 * Bases in introns are included
 * Each read is reduced to its 5' base. In other words, each read only
-  contributes a count to a single base of the gene (Subread option `--read2pos
-  5`)
+  contributes a count to a single base of the gene (featureCounts option
+  `--read2pos 5`)
 
 ## Data
 

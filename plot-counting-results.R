@@ -30,7 +30,7 @@ for (f in files) {
   plotfile <- tools::file_path_sans_ext(plotfile)
   plotfile <- paste0(plotfile, ".png")
   plotfile <- file.path(dir_plots, plotfile)
-  totals <- counts[, list(total = sum(.SD)),
+  totals <- counts[, list(total = base::sum(.SD)),
                    .SDcols = grep("bam$", colnames(counts), value = TRUE),
                    by = Start]
   png(plotfile)
