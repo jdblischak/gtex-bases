@@ -5,8 +5,8 @@ library(stringr)
 
 counts_summary <- fread("data/standard-counts.txt.summary")
 counts_summary
-(reads_assigned <- counts_summary[Status == "Assigned", -(Status:Status)])
-(reads_total <- colSums(counts_summary[, -(Status:Status)]))
+(reads_assigned <- counts_summary[Status == "Assigned", -c("Status")])
+(reads_total <- colSums(counts_summary[, -c("Status")]))
 (reads_percent <- reads_assigned / reads_total * 100)
 
 counts <- fread("data/standard-counts.txt", skip = 1)
@@ -26,7 +26,7 @@ stopifnot(length(unique(counts$Geneid)) == length(unique(counts$gene)))
 summary(counts[["SRR1069690.bam"]])
 hist(counts[["SRR1069690.bam"]])
 
-gene_totals <- apply(counts[, -(Geneid:Length)][, -(gene:gene)], 1, sum)
+gene_totals <- apply(counts[, -(Geneid:Length)][, -c("gene")], 1, sum)
 names(gene_totals) <- counts$gene
 summary(gene_totals)
 sum(gene_totals > 0)
