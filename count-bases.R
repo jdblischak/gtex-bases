@@ -52,7 +52,9 @@ dir.create(outdir, showWarnings = FALSE)
 # Count and export results -----------------------------------------------------
 
 for (i in seq_along(saf_files)) {
+  message("Processing ", saf_files[i])
   saf <- read.table(saf_files[i], header = TRUE, stringsAsFactors = FALSE)
+  saf$Chr <- as.character(saf$Chr)
   counts <- featureCounts(
     files = bam_files,
     annot.ext = saf_files[i],
@@ -71,7 +73,7 @@ for (i in seq_along(saf_files)) {
   outdata <- cbind(counts$annotation, counts$counts)
   outdata[["Length"]] <- NULL
 
-  outfile <- sprintf("%s-%s-chr%d-%d-%d.txt", saf$GeneID[1], saf$Name[1],
+  outfile <- sprintf("%s-%s-chr%s-%d-%d.txt", saf$GeneID[1], saf$Name[1],
                      saf$Chr[1], min(saf$Start), max(saf$End))
   outfile <- file.path(outdir, outfile)
   write.table(outdata, file = outfile,
