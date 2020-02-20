@@ -42,3 +42,4 @@ sum(gene_totals_cpm[target_genes] > -20)
 sort(gene_totals_cpm[target_genes], decreasing = TRUE)[1:12]
 gene_totals_cpm["ENSG00000231500"]
 gene_totals_cpm["ENSG00000104904"]
+gene_totals_cpm["ENSG00000142541"]
