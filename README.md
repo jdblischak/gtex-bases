@@ -32,15 +32,17 @@ conda activate gtex-bases
 
 ## Instructions
 
-1. Download the GTF file with the gene models used by GTEx V8
+1. Download exons from [Ensembl 98](http://sep2019.archive.ensembl.org/) (Sep
+2019, [Gencode 32](https://www.gencodegenes.org/human/release_32.html),
+GRCh38.p13).
     ```
-    Rscript setup.R
+    Rscript download-exons.R
     ```
-    This creates the file `data/gencode.v26.GRCh38.genes.gtf`
+    This creates the file `data/exons.txt`
 
-1. Convert the GTF file to per-gene SAF files with one entry per base pair
+1. Create per-gene SAF files with one entry per base pair
     ```
-    Rscript gtf2saf.R
+    Rscript create-saf-files.R
     ```
     For each target gene, this creates a file `data/saf/<ensembl-gene-id>.saf`
 
@@ -64,7 +66,8 @@ conda activate gtex-bases
     bash count-paired-end-reads.sh /project2/mstephens/dongyue/gtex/*.bam
     ```
 
-* Run a standard gene-level featureCounts run
+* Run a standard gene-level featureCounts run (using GTEx exons)
     ```
+    Rscript download-exons-gtex.R
     bash run-standard-featurecounts.sh /project2/mstephens/dongyue/gtex/*.bam
     ```

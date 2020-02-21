@@ -1,12 +1,11 @@
 #!/usr/bin/env Rscript
 
-# Convert the GTF of all gene models to per-gene SAF files with one entry for
-# each base pair.
+# Create per-gene SAF files with one entry for each base pair.
 #
-# Usage: Rscript gtf2saf.R
+# Usage: Rscript create-saf-files.R
 #
 # Input:
-#   GTF: data/gencode.v26.GRCh38.genes.gtf
+#   Ensembl exons: data/exons.txt
 #   Target genes: data/target-genes.txt
 #
 # Output:
@@ -15,43 +14,42 @@
 # Setup ------------------------------------------------------------------------
 
 suppressPackageStartupMessages({
-library(data.table)
-library(GenomicRanges)
-library(rtracklayer)
+  library(data.table)
 })
 
-gtf <- "data/gencode.v26.GRCh38.genes.gtf"
+exons_file <- "data/exons.txt"
 target_genes_file <- "data/target-genes.txt"
-stopifnot(file.exists(gtf), file.exists(target_genes_file))
+stopifnot(file.exists(exons_file), file.exists(target_genes_file))
 
 dir.create("data/saf/", showWarnings = FALSE)
 
-# Import and format GTF file ---------------------------------------------------
+# Import and format exons ------------------------------------------------------
 
-gr <- import(gtf, format = "gtf")
+exons <- fread(exons_file)
 
 # SAF columns:
 # GeneID Chr Start End Strand Name
 
-saf <- data.table(
-  GeneID = mcols(gr)[, "gene_id"],
-  Chr = as.character(seqnames(gr)),
-  Start = start(gr),
-  End = end(gr),
-  Strand = as.character(strand(gr)),
-  Name = mcols(gr)[, "gene_name"]
-)
+saf <- exons[, list(GeneID = ensembl_gene_id,
+                    Chr = chromosome_name,
+                    Start = exon_chrom_start,
+                    End = exon_chrom_end,
+                    Strand = strand,
+                    Name = external_gene_name)]
+
 
 # Remove "chr" from chromosome
-saf$Chr <- substr(saf$Chr, 4, nchar(saf$Chr))
-# Only keep canonical ID
-saf$GeneID <- substr(saf$GeneID, 1, 15)
-# Remove Y chromosome. Duplicates entries from X
-saf <- saf[Chr != "Y", ]
+saf[, Chr := substr(Chr, 4, nchar(Chr))]
+
+# Confirm that each gene is only present on one chromosome
+stopifnot(
+  identical(
+    length(unique(paste(saf$GeneID, saf$Chr))),
+    length(unique(saf$GeneID))
+  )
+)
 
 stopifnot(saf$Start <= saf$End)
-
-str(saf)
 
 # Reduce to one entry per gene
 setkey(saf, GeneID)
@@ -59,8 +57,6 @@ saf_gene <- saf[, list(Start = min(Start), End = max(End)),
                 by = list(GeneID, Chr, Strand, Name)]
 setkey(saf_gene, GeneID)
 stopifnot(nrow(saf_gene) == length(unique(saf_gene$GeneID)))
-
-str(saf_gene)
 
 # Subset to target genes -------------------------------------------------------
 
@@ -79,7 +75,6 @@ for (i in seq_len(nrow(saf_target_genes))) {
                        by = list(GeneID, Chr, Strand, Name)]
   saf_base[, End := Start]
 
-  str(saf_base)
   stopifnot(saf_base$End == saf_base$Start)
 
   saf_base <- saf_base[, list(GeneID, Chr, Start, End, Strand, Name)]
