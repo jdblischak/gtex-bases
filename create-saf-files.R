@@ -37,10 +37,6 @@ saf <- exons[, list(GeneID = ensembl_gene_id,
                     Strand = strand,
                     Name = external_gene_name)]
 
-
-# Remove "chr" from chromosome
-saf[, Chr := substr(Chr, 4, nchar(Chr))]
-
 # Confirm that each gene is only present on one chromosome
 stopifnot(
   identical(

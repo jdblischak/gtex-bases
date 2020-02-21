@@ -38,9 +38,6 @@ exons_final <- exons_final[order(exons_final$chromosome_name,
                                  exons_final$exon_chrom_start,
                                  exons_final$exon_chrom_end), ]
 
-exons_final$chromosome_name <- paste0("chr", exons_final$chromosome_name)
-exons_final$chromosome_name <- sub("chrMT", "chrM", exons_final$chromosome_name)
-
 exons_final$strand <- ifelse(exons_final$strand == 1, "+", "-")
 
 stopifnot(

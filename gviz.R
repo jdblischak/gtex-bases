@@ -12,6 +12,10 @@ suppressPackageStartupMessages({
 exons <- fread("data/exons.txt")
 setkey(exons, ensembl_gene_id)
 
+# Convert chromosome names from Ensembl to UCSC (required by Gviz)
+exons[, chromosome_name := paste0("chr", chromosome_name)]
+exons[, chromosome_name := sub("chrMT", "chrM", chromosome_name)]
+
 track_genes <- GeneRegionTrack(
   rstarts = exons$exon_chrom_start,
   rends = exons$exon_chrom_end,
@@ -37,6 +41,10 @@ plotTracks(
 )
 
 counts <- fread("data/counts/ENSG00000104904-OAZ1-chr19-2270291-2273490.txt")
+# Convert chromosome names from Ensembl to UCSC (required by Gviz)
+counts[, Chr := paste0("chr", Chr)]
+counts[, Chr := sub("chrMT", "chrM", Chr)]
+
 counts_only <- counts[, -(GeneID:Strand)]
 samples <- colnames(counts_only)
 samples <- sub(pattern = "^SRR", replacement = "", samples)

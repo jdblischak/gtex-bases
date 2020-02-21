@@ -10,6 +10,11 @@ samples based on topic modelling of the splicing patterns.
 * Each read is reduced to its 5' base. In other words, each read only
   contributes a count to a single base of the gene (featureCounts option
   `--read2pos 5`)
+* The GTEx BAM files use Ensembl chromosome names, e.g. 1, 2, MT, etc. Thus
+`data/exons.txt` and the SAF files in `data/saf/` use Ensembl chromosome names.
+However, [Gviz](https://bioconductor.org/packages/release/bioc/html/Gviz.html)
+uses UCSC chromosome names, e.g. chr1, chr2, chrM, etc. Thus the chromosome
+names are converted just prior to plotting.
 
 ## Data
 
