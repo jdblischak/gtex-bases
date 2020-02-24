@@ -1,13 +1,12 @@
 #!/usr/bin/env Rscript
 
-# Convert the GTF of all gene models to per-gene SAF files with one entry for
-# each base pair.
+# Count the number of reads mapping to each base pair of a given gene.
 #
 # Usage: Rscript count-bases.R
 #
 # Input:
-#   GTF: data/gencode.v26.GRCh38.genes.gtf
-#   Target genes: data/target-genes.txt
+#   BAM: /project2/mstephens/dongyue/gtex/SRRXXXXXXX.bam
+#   SAF: data/saf/<ensembl-gene-id>.saf
 #
 # Output:
 #   Counts: data/counts/<ensembl-gene-id>-<gene-name>-<chromosome>-<start>-<end>.txt
@@ -60,14 +59,19 @@ for (i in seq_along(saf_files)) {
     annot.ext = saf_files[i],
     useMetaFeatures = FALSE,
     read2pos = 5,
+    countMultiMappingReads = FALSE,
     isPairedEnd = TRUE,
     requireBothEndsMapped = TRUE,
     countChimericFragments = FALSE,
     nthreads = nthreads,
-    tmpDir = tempdir()
+    tmpDir = tempdir(),
+    verbose = TRUE
   )
   colnames(counts$counts) <- stringr::str_extract(colnames(counts$counts),
                                                   "SRR\\d+\\.bam")
+  colnames(counts$stat) <- stringr::str_replace(colnames(counts$stat),
+                                                ".+(SRR\\d+\\.bam)",
+                                                "\\1")
   # Avoid duplicate rowname warning:
   rownames(counts$counts) <- seq_len(nrow(counts$counts))
   outdata <- cbind(counts$annotation, counts$counts)
@@ -77,5 +81,9 @@ for (i in seq_along(saf_files)) {
                      saf$Chr[1], min(saf$Start), max(saf$End))
   outfile <- file.path(outdir, outfile)
   write.table(outdata, file = outfile,
+              sep = "\t", quote = FALSE, row.names = FALSE)
+  # Save the counting summary statistics
+  outfile_sum <- paste0(outfile, ".summary")
+  write.table(counts$stat, file = outfile_sum,
               sep = "\t", quote = FALSE, row.names = FALSE)
 }

@@ -40,7 +40,7 @@ plotTracks(
   chromosome = "chr19"
 )
 
-counts <- fread("data/counts/ENSG00000104904-OAZ1-chr19-2270291-2273490.txt")
+counts <- fread("data/counts/ENSG00000104904-OAZ1-chr19-2269509-2273490.txt")
 # Convert chromosome names from Ensembl to UCSC (required by Gviz)
 counts[, Chr := paste0("chr", Chr)]
 counts[, Chr := sub("chrMT", "chrM", Chr)]
