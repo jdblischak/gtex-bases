@@ -9,11 +9,11 @@ dependencies:
   - bioconductor-biomart
   - bioconductor-genomicranges
   - bioconductor-gviz
-  - bioconductor-rsubread
+  - bioconductor-rsubread=1.28.1
   - bioconductor-rtracklayer
   - r-data.table
-  - r-base=3.6
+  - r-base=3
   - r-stringr
   - samtools
   - sra-tools
-  - subread
+  - subread=1.6.4
