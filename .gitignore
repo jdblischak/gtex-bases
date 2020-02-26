@@ -1,4 +1,7 @@
 data/
+log/
 .R*
+snakelog.out
+.snakemake/
 *stdout.txt
 *stderr.txt

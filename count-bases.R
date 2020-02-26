@@ -19,17 +19,14 @@ suppressPackageStartupMessages({
 })
 
 nthreads <- 1
-args <- commandArgs(trailingOnly = TRUE)
-if (length(args) == 1) {
-  nthreads <- as.integer(args)
-}
+
 message("Using ", nthreads, " threads to run featureCounts")
 if (nthreads > 28) {
   warning("That's a lot of threads! Did you mean to do that?")
 }
 
 bam_files <- list.files(
-  path = "/project2/mstephens/dongyue/gtex/",
+  path = "/project2/mstephens/dongyue/gtex",
   pattern = "bam$",
   full.names = TRUE
 )

@@ -9,11 +9,13 @@ dependencies:
   - bioconductor-biomart
   - bioconductor-genomicranges
   - bioconductor-gviz
-  - bioconductor-rsubread=1.28.1
+  - bioconductor-rsubread
   - bioconductor-rtracklayer
+  - python
   - r-data.table
-  - r-base=3
+  - r-base=3.6
   - r-stringr
   - samtools
+  - snakemake
   - sra-tools
-  - subread=1.6.4
+  - subread

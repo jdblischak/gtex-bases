@@ -2,11 +2,22 @@
 
 # Download exons from Ensembl.
 #
+# Usage: Rscript download-exons.R <ensembl-gene-id>
+#
 # Ensembl 98 (Sep 2019) - http://sep2019.archive.ensembl.org/
 # Gencode 32 (Sep 2019) - https://www.gencodegenes.org/human/release_32.html
 # GRCh38.p13
 
-library(biomaRt)
+suppressPackageStartupMessages({
+  library(biomaRt)
+})
+
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) == 1) {
+  gene_id <- args[1]
+} else {
+  stop("Usage: Rscript download-exons.R <ensembl-gene-id>", call. = FALSE)
+}
 
 archive <- "sep2019.archive.ensembl.org"
 
@@ -29,6 +40,8 @@ exons_all <- getBM(
     "gene_biotype",
     "transcript_biotype"
   ),
+  filters = "ensembl_gene_id",
+  values = gene_id,
   mart = ensembl
 )
 
@@ -48,5 +61,4 @@ stopifnot(
   )
 )
 
-write.table(exons_final, "data/exons.txt",
-            quote = FALSE, sep = "\t", row.names = FALSE)
+write.table(exons_final, quote = FALSE, sep = "\t", row.names = FALSE)
