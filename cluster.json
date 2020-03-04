@@ -15,5 +15,10 @@
     {
     "mem" : 16000,
     "tasks" : 8
+    },
+    "count_gene" :
+    {
+    "mem" : 16000,
+    "tasks" : 8
     }
 }

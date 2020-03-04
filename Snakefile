@@ -11,6 +11,7 @@ dir_bam_pe = dir_external + "bam-pe/"
 dir_exons = dir_data + "exons/"
 dir_saf = dir_data + "saf/"
 dir_counts = dir_data + "counts/"
+dir_counts_gene = dir_data + "counts-gene/"
 
 assert os.path.exists(dir_data), "Local data directory exists"
 assert os.path.exists(dir_external), "External data directory exists"
@@ -27,7 +28,8 @@ genes = config["genes"]
 localrules: download_exons
 
 rule all:
-    input: expand(dir_counts + "{gene}.txt", gene = genes)
+    input: expand(dir_counts + "{gene}.txt", gene = genes),
+           expand(dir_counts_gene + "{gene}.txt", gene = genes)
 
 rule target_genes:
     input: expand(dir_saf + "{gene}.saf", gene = genes)
@@ -62,4 +64,21 @@ rule count_bases:
     output: dir_counts + "{gene}.txt"
     threads: 8
     conda: "envs/subread.yml"
-    shell: "featureCounts -a {input.saf} -o {output} -F SAF -f --read2pos 5 -p -B -C -T {threads} --tmpDir {dir_scratch} {input.bam}"
+    shell:
+      "featureCounts -a {input.saf} -o {output} -F SAF -f --read2pos 5 -p -B -C -T {threads} --tmpDir {dir_scratch} -O {input.bam} ;\n"
+      # Format the output file
+      "sed -i '1d' {output} ;\n"
+      "sed -i 's/Geneid/GeneID/' {output} ;\n"
+
+# Instead of counting per base, count for the entire gene (i.e. meta-feature)
+rule count_gene:
+    input: saf = dir_saf + "{gene}.saf",
+           bam = expand(dir_bam_pe + "{sample}.bam", sample = samples)
+    output: dir_counts_gene + "{gene}.txt"
+    threads: 8
+    conda: "envs/subread.yml"
+    shell:
+      "featureCounts -a {input.saf} -o {output} -F SAF --read2pos 5 -p -B -C -T {threads} --tmpDir {dir_scratch} {input.bam} ;\n"
+      # Format the output file
+      "sed -i '1d' {output} ;\n"
+      "sed -i 's/Geneid/GeneID/' {output} ;\n"
