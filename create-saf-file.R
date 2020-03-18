@@ -20,7 +20,7 @@ args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 1) {
   exons_file <- args[1]
 } else {
-  stop("Usage: Rscript create-saf-file.R <ensembl-gene-id>", call. = FALSE)
+  stop("Usage: Rscript create-saf-file.R <ensembl-gene-id>.txt", call. = FALSE)
 }
 
 stopifnot(file.exists(exons_file))
@@ -58,6 +58,10 @@ saf_base <- saf_gene[, list(Start = seq(Start, End)),
                      by = list(GeneID, Chr, Strand, Name)]
 saf_base[, End := Start]
 stopifnot(saf_base$End == saf_base$Start)
+
+# Append base number to each feature, for interpreting assignments from "-R CORE"
+saf_base[, GeneID := paste(GeneID, seq_len(nrow(saf_base)), sep = "_")]
+
 
 saf_base <- saf_base[, list(GeneID, Chr, Start, End, Strand, Name)]
 write.table(saf_base, sep = "\t", quote = FALSE, row.names = FALSE)
