@@ -65,7 +65,7 @@ rule count_bases:
     threads: 8
     conda: "envs/subread.yml"
     shell:
-      "featureCounts -a {input.saf} -o {output} -F SAF -f --read2pos 5 -p -B -C -T {threads} --tmpDir {dir_scratch} -O {input.bam} ;\n"
+      "featureCounts -a {input.saf} -o {output} -F SAF -f --read2pos 5 -p -B -C -T {threads} --tmpDir {dir_scratch} -O -R CORE --Rpath {dir_external} {input.bam} ;\n"
       # Format the output file
       "sed -i '1d' {output} ;\n"
       "sed -i 's/Geneid/GeneID/' {output} ;\n"
