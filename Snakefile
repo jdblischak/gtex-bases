@@ -43,7 +43,7 @@ rule remove_se_reads:
     input: bam = dir_bam + "{sample}.bam"
     output: dir_bam_pe + "{sample}.bam"
     conda: "envs/samtools.yml"
-    shell: "samtools view -b -f 1 {input} > {output}"
+    shell: "samtools view -b -q 5 -f 1 -f 64 {input} > {output}"
 
 rule download_exons:
     output: dir_exons + "{gene}.txt"
@@ -65,7 +65,7 @@ rule count_bases:
     threads: 8
     conda: "envs/subread.yml"
     shell:
-      "featureCounts -a {input.saf} -o {output} -F SAF -f --read2pos 5 -p -B -C -T {threads} --tmpDir {dir_scratch} -O -R CORE --Rpath {dir_external} {input.bam} ;\n"
+      "featureCounts -a {input.saf} -o {output} -F SAF -f --read2pos 5 -T {threads} --tmpDir {dir_scratch} -O -R CORE --Rpath {dir_external} {input.bam} ;\n"
       # Format the output file
       "sed -i '1d' {output} ;\n"
       "sed -i 's/Geneid/GeneID/' {output} ;\n"
