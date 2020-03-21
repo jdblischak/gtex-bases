@@ -11,7 +11,7 @@ greater_than_1000 <- 0
 for (f in files) {
   print(f)
   counts <- fread(f)
-  counts <- counts[, -(GeneID:Strand)]
+  counts <- counts[, -(GeneID:Length)]
   total <- sum(colSums(counts))
   print(total)
   if (total > 0) greater_than_0 <- greater_than_0 + 1

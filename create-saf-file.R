@@ -60,8 +60,8 @@ saf_base[, End := Start]
 stopifnot(saf_base$End == saf_base$Start)
 
 # Append base number to each feature, for interpreting assignments from "-R CORE"
-saf_base[, GeneID := paste(GeneID, seq_len(nrow(saf_base)), sep = "_")]
-
+# (This is only needed when diagnosing featureCounts filtering issues)
+#saf_base[, GeneID := paste(GeneID, seq_len(nrow(saf_base)), sep = "_")]
 
 saf_base <- saf_base[, list(GeneID, Chr, Start, End, Strand, Name)]
 write.table(saf_base, sep = "\t", quote = FALSE, row.names = FALSE)
